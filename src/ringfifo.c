@@ -18,7 +18,7 @@ void ringinitial(int num, int size)
 		ring.ringfifo[i].buffer = malloc (size);
 		ring.ringfifo[i].buffer_size = 0;
 		ring.ringfifo[i].frame_type = -1;
-		printf("FIFO INFO:idx:%d,len:%d,ptr:%x\n",i,ring.ringfifo[i].buffer_size,(int)(ring.ringfifo[i].buffer));
+		//printf("FIFO INFO:idx:%d,len:%d,ptr:%x\n",i,ring.ringfifo[i].buffer_size,(int)(ring.ringfifo[i].buffer));
 	}
 	ring.size = num;
 	ring.in = 0;
@@ -37,7 +37,7 @@ void ringfree()
 	printf("begin free mem\n");
 	for (i =0;i<ring.size;i++)
 	{
-		printf("FREE FIFO INFO:idx:%d,len:%d,ptr:%x\n",i,ring.ringfifo[i].buffer_size,(int)(ring.ringfifo[i].buffer));
+		//printf("FREE FIFO INFO:idx:%d,len:%d,ptr:%x\n",i,ring.ringfifo[i].buffer_size,(int)(ring.ringfifo[i].buffer));
 		free(ring.ringfifo[i].buffer);
 		ring.ringfifo[i].buffer_size = 0;
 	}
@@ -50,15 +50,13 @@ int addring (int i)
 }
 
 
-Node * ringget()
+Node * ringgetnode()
 {
 	int Pos;
 	Node *getinfo = NULL;
 	if (ring.count>0)
 	{
 		Pos = ring.out;
-		ring.out = addring(ring.out);
-		ring.count--;
 		getinfo = &ring.ringfifo[Pos];
 	}
 	else 
@@ -68,15 +66,27 @@ Node * ringget()
 	return getinfo;
 }
 
+void ringget()
+{
+	if (ring.count>0)
+	{
+		ring.out = addring(ring.out);
+		ring.count--;
+	}
+	else 
+	{
+		//printf("Buffer is empty\n");
+	}
+	return ;
+}
 
-Node * ringput()
+
+Node * ringputnode()
 {
 	Node *putinfo = NULL;
 	if (ring.count<ring.size)
 	{
 		putinfo = &ring.ringfifo[ring.in];
-		ring.in = addring(ring.in);
-		ring.count++;
 	}
 	else 
 	{
@@ -84,4 +94,20 @@ Node * ringput()
 	}
 	return putinfo;
 }
+
+void  ringput()
+{
+
+	if (ring.count<ring.size)
+	{
+		ring.in = addring(ring.in);
+		ring.count++;
+	}
+	else 
+	{
+		//	printf("Buffer is full\n");
+	}
+	return ;
+}
+
 

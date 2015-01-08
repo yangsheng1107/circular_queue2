@@ -22,10 +22,12 @@ typedef struct _Ring_t {
 
 void ringinitial(int num, int size);
 int addring (int i);
-Node * ringget();
-Node * ringput();
 void ringfree();
 void ringreset();
+Node * ringputnode();
+void  ringput();
+Node * ringgetnode();
+void ringget();
 
 
 #ifdef __cplusplus
